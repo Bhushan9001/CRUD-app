@@ -6,13 +6,14 @@ exports.setBook = (req, res) => {
         name,
         description,
         author,
-        price
+        price,
     })
 
 
     book.save((err, book) => {
         if (err) {
-            return res.status(400).json({ err })
+            // return res.status(501).json({ "err":err })
+            console.log(err);
         }
         if (!err && book) {
             return res.status(201).json({ "message":"Created" })
