@@ -1,8 +1,9 @@
 const Books = require('../model/books')
 
 exports.setBook = (req, res) => {
-    const { name, author, description, price } = req.body;
+    const { user,name, author, description, price } = req.body;
     const book = new Books({
+        user,
         name,
         description,
         author,
@@ -16,7 +17,7 @@ exports.setBook = (req, res) => {
             console.log(err);
         }
         if (!err && book) {
-            return res.status(201).json({ "message":"Created" })
+            return res.status(201).json({ message:"Created",book:book })
         } else {
             res.status(400).json({ message: "something went wrong!!" })
         }
@@ -38,16 +39,14 @@ exports.getBook = (req, res) => {
     })
 
 }
-exports.getBookByID = (req, res) => {
-    Books.findById(req.params.id,(err, book) => {
-      if(err) {
-        console.log(err);
-      }else{
-        res.status(200).json({
-          book
-        })
-      }
-    });
+exports.getBookByID = async(req, res) => {
+    const id = req.params.id;
+    try {
+      const books = await Books.find({user:id});
+      res.json({books});
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
 }
 
 exports.update = async (req, res) => {
